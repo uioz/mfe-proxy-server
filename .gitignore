@@ -102,3 +102,6 @@ dist
 
 # TernJS port file
 .tern-port
+
+# types which generate by typescript
+types
