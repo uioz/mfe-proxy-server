@@ -4,6 +4,9 @@
   "description": "",
   "main": "dist/index.js",
   "scripts": {
+    "dev": "tsc -w",
+    "build": "tsc",
+    "postinstall": "node bin/index.js",
     "test": "echo \"Error: no test specified\" && exit 1",
     "prepare": "husky install"
   },
@@ -12,6 +15,7 @@
     "url": "git+https://github.com/uioz/mfe-proxy-server.git"
   },
   "files": [
+    "bin",
     "dist",
     "types"
   ],
@@ -37,5 +41,8 @@
     "prettier": "^2.2.1",
     "typescript": "^4.2.4"
   },
-  "dependencies": {}
+  "dependencies": {
+    "fastify": "^3.14.2",
+    "fastify-static": "^4.0.1"
+  }
 }

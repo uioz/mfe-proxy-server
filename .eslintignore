@@ -8,3 +8,5 @@ coverage
 .eslintrc.js
 # types which generate by typescript
 types
+# bin
+bin
