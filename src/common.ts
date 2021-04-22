@@ -1,4 +1,4 @@
-import {mfeRoute} from 'types';
+import { mfeRoute } from 'types';
 
 export const MANIFEST_FILE_NAME = 'mfe-manifest.json';
 

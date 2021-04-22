@@ -1,8 +1,8 @@
 import * as path from 'path';
-import {FastifyInstance, FastifyPluginCallback} from 'fastify';
+import { FastifyInstance, FastifyPluginCallback } from 'fastify';
 import fastifyStatic from 'fastify-static';
-import {mfeRoute, appInfo, manifest} from './types';
-import {DEFAULT_MFE_ROUTE} from './common';
+import { mfeRoute, appInfo, manifest } from './types';
+import { DEFAULT_MFE_ROUTE } from './common';
 const CWD = process.cwd();
 
 let workDir = '';
@@ -67,7 +67,7 @@ interface options {
 
 export const mfeProxyServerPlugin: FastifyPluginCallback<options> = function mfeProxyServerPlugin(
   fastify,
-  {manifest, context},
+  { manifest, context },
   done
 ) {
   workDir = typeof context === 'string' ? context : CWD;

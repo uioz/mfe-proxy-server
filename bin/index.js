@@ -1,8 +1,8 @@
 #!/usr/bin/env node
 'use strict';
 // assuming we are under the node_modules folder
-const {resolve, join} = require('path');
-const {readFile, writeFile} = require('fs').promises;
+const { resolve, join } = require('path');
+const { readFile, writeFile } = require('fs').promises;
 
 const CWD = process.cwd();
 // /node_modules -> <project root>

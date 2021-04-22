@@ -1,7 +1,7 @@
 'use strict';
 /** @type {import("fastify").FastifyInstance} */
 const fastify = require('fastify')();
-const {mfeProxyServerPlugin} = require('mfe-proxy-server');
+const { mfeProxyServerPlugin } = require('mfe-proxy-server');
 
 // DO whatever you want before mfeProxyServerPlugin
 
