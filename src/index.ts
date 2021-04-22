@@ -1,41 +1,9 @@
-// TODO: use plugincallback type
 import * as path from 'path';
 import {FastifyInstance, FastifyPluginCallback} from 'fastify';
 import fastifyStatic from 'fastify-static';
-import {mfeRoute} from './types';
+import {mfeRoute, appInfo, manifest} from './types';
 import {DEFAULT_MFE_ROUTE} from './common';
 const CWD = process.cwd();
-
-interface appInfo {
-  /**
-   * 应用程序名称(包名称)
-   */
-  name: string;
-  /**
-   * 应用程序所在目录
-   */
-  dir: string;
-  /**
-   * 路由配置文件地址
-   */
-  routePath: string;
-  /**
-   * 构建后的输出路径
-   */
-  outputDir: string;
-  /**
-   * 静态资源路径
-   */
-  staticDir: string;
-}
-
-interface manifest {
-  // TODO: support in next major version
-  env: {
-    [key: string]: string;
-  };
-  applications: Array<appInfo>;
-}
 
 let workDir = '';
 
@@ -88,6 +56,7 @@ function mountRouteToApp(app: appInfo, set: Set<string>): appInfoWithRoute {
 interface options {
   /**
    * 执行上下文 - 绝对路径
+   * 默认使用 cwd
    */
   context?: string;
   /**
@@ -117,9 +86,10 @@ export const mfeProxyServerPlugin: FastifyPluginCallback<options> = function mfe
 
       // TODO: MPA support later
       // send entry file
-      for (const path of appInfo.route.domain) {
-        fastify.get(path, (_request, reply) => {
-          reply.sendFile('index.html', appInfo.outputDir);
+      for (const routePath of appInfo.route.domain) {
+        const entryFilePath = path.join(workDir, appInfo.outputDir);
+        fastify.get(routePath, (_request, reply) => {
+          reply.sendFile('index.html', entryFilePath);
         });
       }
 
@@ -127,9 +97,12 @@ export const mfeProxyServerPlugin: FastifyPluginCallback<options> = function mfe
       i++;
     }
 
+    // TODO: support MAP later
     // host static files at output dir
     fastify.register(fastifyStatic, {
-      root: appInfoWithRoute.map((application) => application.outputDir),
+      root: appInfoWithRoute.map((application) =>
+        path.join(workDir, application.outputDir)
+      ),
       decorateReply: false,
     });
   }

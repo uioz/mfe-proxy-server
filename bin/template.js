@@ -1,11 +1,12 @@
-"use strict";
+'use strict';
 /** @type {import("fastify").FastifyInstance} */
-const fastify = require("fastify")();
+const fastify = require('fastify')();
+const {mfeProxyServerPlugin} = require('mfe-proxy-server');
 
-// DO whatever you want before mfe-server
+// DO whatever you want before mfeProxyServerPlugin
 
-fastify.register(require("mfe-proxy-server"), {
-  manifest: require("./mfe-manifest.json"),
+fastify.register(mfeProxyServerPlugin, {
+  manifest: require('./mfe-manifest.json'),
 });
 
 // Run the server!
