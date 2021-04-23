@@ -1,8 +1,13 @@
 export interface mfeRoute {
-  domain: Array<string>;
+  rewrites?: Array<{
+    from: Array<string> | string;
+    to: string;
+  }>;
+  index?: string;
+  domain?: Array<string>;
 }
 
-export interface appInfo {
+export interface applicationMeta {
   /**
    * 应用程序名称(包名称)
    */
@@ -30,5 +35,5 @@ export interface manifest {
   env: {
     [key: string]: string;
   };
-  applications: Array<appInfo>;
+  applications: Array<applicationMeta>;
 }
