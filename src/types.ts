@@ -28,6 +28,10 @@ export interface applicationMeta {
    * 静态资源路径
    */
   staticDir: string;
+  /**
+   * 静态资源前缀
+   */
+  publicPath: string;
 }
 
 export interface manifest {
