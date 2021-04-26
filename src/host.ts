@@ -31,23 +31,31 @@ export class HostApp {
   }
 
   protected hostStaticDir(): HostApp {
-    this.fastify.register(fastifyStatic, {
-      root: this.staticDir,
-      wildcard: true,
-      prefix: `/static/${this.applicationMeta.name}`,
-      decorateReply:
-        this.decorateReply && ((this.decorateReply = false) || true),
-    });
+    const { publicPath } = this.applicationMeta;
+    const staticDir = this.staticDir;
+    const outputDir = this.outputDir;
+
+    // https://github.com/uioz/mfe-proxy-server/issues/18#issuecomment-825406189
+    if (staticDir !== outputDir) {
+      this.fastify.register(fastifyStatic, {
+        root: staticDir,
+        wildcard: true,
+        prefix: publicPath,
+        decorateReply:
+          this.decorateReply && ((this.decorateReply = false) || true),
+      });
+    }
 
     return this;
   }
 
   protected deliverHtml(): HostApp {
+    const { rewrites } = this.applicationMeta;
     const outputDir = this.outputDir;
 
     // handle rewrites first
-    if (this.applicationMeta.rewrites) {
-      for (const { from, to } of this.applicationMeta.rewrites) {
+    if (rewrites) {
+      for (const { from, to } of rewrites) {
         if (Array.isArray(from)) {
           for (const path of from) {
             this.fastify.get(path, (request, reply) => {
@@ -63,8 +71,10 @@ export class HostApp {
     }
 
     if (this.applicationMeta.domain) {
-      for (const path of this.applicationMeta.domain) {
-        const indexFile = this.applicationMeta.index ?? DEFAULT_INDEX_FILE;
+      const { domain, index } = this.applicationMeta;
+
+      for (const path of domain) {
+        const indexFile = index ?? DEFAULT_INDEX_FILE;
         this.fastify.get(path, (request, reply) => {
           reply.sendFile(indexFile, outputDir);
         });
@@ -76,8 +86,6 @@ export class HostApp {
 
   host(decorateReply: boolean): HostApp {
     this.decorateReply = decorateReply;
-
-    // TODO: if staticDir equal to outputDir then stop hosting for staticDir
 
     return this.hostStaticDir().deliverHtml();
   }
