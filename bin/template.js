@@ -6,6 +6,7 @@ const { mfeProxyServerPlugin } = require('mfe-proxy-server');
 // DO whatever you want before mfeProxyServerPlugin
 
 fastify.register(mfeProxyServerPlugin, {
+  mode: process.env.NODE_ENV,
   manifest: require('./mfe-manifest.json'),
 });
 

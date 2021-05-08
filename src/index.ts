@@ -1,5 +1,6 @@
 import { FastifyPluginCallback } from 'fastify';
 import { parseRoute, removeduplicateRoute } from './parseRoute';
+import { parseConfig } from './parseConfig';
 import { HostApp, hostOutputDir } from './host';
 import { manifest } from './types';
 
@@ -13,11 +14,15 @@ interface options {
    * manifest.json 文件
    */
   manifest: manifest;
+  /**
+   * 运行模式
+   */
+  mode?: 'development' | 'production';
 }
 
 export const mfeProxyServerPlugin: FastifyPluginCallback<options> = function mfeProxyServerPlugin(
   fastify,
-  { manifest, context },
+  { manifest, context, mode },
   done
 ) {
   const workDir = typeof context === 'string' ? context : process.cwd();
@@ -25,15 +30,21 @@ export const mfeProxyServerPlugin: FastifyPluginCallback<options> = function mfe
   if (manifest.applications.length) {
     const set: Set<string> = new Set();
 
+    const Hosts = manifest.applications
+      .map((appMeta) =>
+        parseConfig(
+          workDir,
+          removeduplicateRoute(set, parseRoute(workDir, appMeta))
+        )
+      )
+      .map((appMeta) => new HostApp(workDir, mode, fastify, appMeta));
+
     hostOutputDir(
       fastify,
-      manifest.applications
-        .map((item) => removeduplicateRoute(set, parseRoute(workDir, item)))
-        .map(
-          (item, index) =>
-            new HostApp(workDir, fastify, item).host(!index).outputDir // !index -> 0 = true, > 0 = false
-        )
+      Hosts.map((host) => host.outputDir)
     );
+
+    Hosts.forEach((host) => host.host());
   }
 
   done();

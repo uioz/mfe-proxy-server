@@ -1,8 +1,10 @@
 import path from 'path';
 import fastifyStatic from 'fastify-static';
 import { FastifyInstance } from 'fastify';
-import { applicationMetaWithRouteInfo } from './parseRoute';
-import { DEFAULT_INDEX_FILE } from './common';
+import { applicationMetaFull } from './parseConfig';
+import { DEFAULT_INDEX_FILE, DEFAULT_STATIC_PREFIX } from './common';
+import { joinPath, normalizePath } from './utils';
+import { mfeRoute } from 'types';
 
 export function hostOutputDir(
   fastify: FastifyInstance,
@@ -11,40 +13,75 @@ export function hostOutputDir(
   fastify.register(fastifyStatic, {
     root: root,
     wildcard: true,
-    decorateReply: false,
+    decorateReply: true,
   });
 }
 
 export class HostApp {
-  private decorateReply: boolean;
   public staticDir: string;
   public outputDir: string;
+  private mfeRoute: mfeRoute | undefined;
+  private publicPath: string | undefined;
 
   constructor(
     workDir: string,
+    mode: 'development' | 'production' = 'production',
     private fastify: FastifyInstance,
-    private applicationMeta: applicationMetaWithRouteInfo
+    private applicationMeta: applicationMetaFull
   ) {
     this.outputDir = path.join(workDir, this.applicationMeta.outputDir);
     this.staticDir = path.join(workDir, this.applicationMeta.staticDir);
-    this.decorateReply = false;
+
+    if (mode === 'development') {
+      this.mfeRoute = {
+        domain: applicationMeta.domain,
+        rewrites: applicationMeta.rewrites,
+        index: applicationMeta.index,
+      };
+    }
+
+    // https://github.com/uioz/mfe-proxy-server/issues/21#issue-880421756
+    if (this.applicationMeta.config?.static !== false) {
+      const publicPathFromConfig = this.applicationMeta.config?.static
+        ?.publicPath;
+
+      this.publicPath = normalizePath(
+        publicPathFromConfig ?? DEFAULT_STATIC_PREFIX
+      );
+
+      const staticPrefixFromConfig = this.applicationMeta.config?.static
+        ?.staticPrefix;
+
+      if (
+        staticPrefixFromConfig === true ||
+        staticPrefixFromConfig === undefined
+      ) {
+        this.publicPath = joinPath(this.publicPath, this.applicationMeta.name);
+      }
+    }
+  }
+
+  protected hostMfeRoute(): HostApp {
+    this.fastify.get(
+      `${this.publicPath}${path.parse(this.applicationMeta.routePath).base}`,
+      (request, reply) => {
+        reply
+          .code(200)
+          .header('Content-Type', 'application/json; charset=utf-8')
+          .send(this.mfeRoute);
+      }
+    );
+
+    return this;
   }
 
   protected hostStaticDir(): HostApp {
-    const { publicPath } = this.applicationMeta;
-    const staticDir = this.staticDir;
-    const outputDir = this.outputDir;
-
-    // https://github.com/uioz/mfe-proxy-server/issues/18#issuecomment-825406189
-    if (staticDir !== outputDir) {
-      this.fastify.register(fastifyStatic, {
-        root: staticDir,
-        wildcard: true,
-        prefix: publicPath,
-        decorateReply:
-          this.decorateReply && ((this.decorateReply = false) || true),
-      });
-    }
+    this.fastify.register(fastifyStatic, {
+      root: this.staticDir,
+      wildcard: true,
+      prefix: this.publicPath,
+      decorateReply: false,
+    });
 
     return this;
   }
@@ -84,9 +121,17 @@ export class HostApp {
     return this;
   }
 
-  host(decorateReply: boolean): HostApp {
-    this.decorateReply = decorateReply;
+  host(): HostApp {
+    // you need to host mfe-route.json by yourself, if mfe.config.static = false
+    // https://github.com/uioz/mfe-proxy-server/issues/13#issuecomment-834174452
+    if (this.publicPath && this.mfeRoute) {
+      this.hostMfeRoute();
+    }
 
-    return this.hostStaticDir().deliverHtml();
+    if (this.publicPath) {
+      this.hostStaticDir();
+    }
+
+    return this.deliverHtml();
   }
 }
