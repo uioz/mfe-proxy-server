@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.1.0](https://github.com/uioz/mfe-proxy-server/compare/v1.0.1...v1.1.0) (2021-05-18)
+
+
+### Features
+
+* tempate supports env variables inject  ([d6e3d18](https://github.com/uioz/mfe-proxy-server/commit/d6e3d186c81658c630f63667b11ffe47cc9d9cc3))
+
 ### [1.0.1](https://github.com/uioz/mfe-proxy-server/compare/v1.0.0...v1.0.1) (2021-05-17)
 
 ## 1.0.0 (2021-05-17)
