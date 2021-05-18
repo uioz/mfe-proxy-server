@@ -1,22 +1,35 @@
-'use strict';
+function generateTemplate(env) {
+  Object.assign(
+    {
+      port: 80,
+      host: '0.0.0.0',
+    },
+    env
+  );
+
+  return `'use strict';
 /** @type {import("fastify").FastifyInstance} */
-const fastify = require('fastify')();
+const fastify = require('fastify')({ logger: true });
 const { mfeProxyServerPlugin } = require('mfe-proxy-server');
 
 // DO whatever you want before mfeProxyServerPlugin
 
 fastify.register(mfeProxyServerPlugin, {
-  mode: process.env.NODE_ENV,
+  mode: ${env.mode ? `'${env.mode}'` : 'process.env.NODE_ENV'},
   manifest: require('./mfe-manifest.json'),
 });
 
 // Run the server!
 const start = async () => {
   try {
-    await fastify.listen(3000);
+    await fastify.listen(${env.port}, '${env.host}');
   } catch (err) {
     fastify.log.error(err);
     process.exit(1);
   }
 };
-start();
+
+start();`;
+}
+
+exports.generateTemplate = generateTemplate;
