@@ -2,18 +2,22 @@
 'use strict';
 // assuming we are under the node_modules folder
 const { resolve, join } = require('path');
-const { readFile, writeFile } = require('fs').promises;
+const { writeFile } = require('fs').promises;
+const { generateTemplate } = require('./template');
 
 const CWD = process.cwd();
 // /node_modules -> <project root>
 const projectPath = resolve(CWD, '../../');
 
-const TEMPLATE_NAME = 'template.js';
 const TARGET_NAME = 'mfe-server.js';
 const PACKAGE_NAME = require('../package.json').name;
 
 async function run() {
-  const template = await readFile(join(CWD, 'bin', TEMPLATE_NAME));
+  const template = generateTemplate({
+    host: process.env.MFE_SERVER_HOST,
+    port: process.env.MFE_SERVER_PORT,
+    mode: process.env.MFE_SERVER_MODE,
+  });
 
   try {
     await writeFile(join(projectPath, TARGET_NAME), template, {
