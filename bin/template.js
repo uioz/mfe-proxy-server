@@ -1,12 +1,4 @@
 function generateTemplate(env) {
-  env = Object.assign(
-    {
-      port: 80,
-      host: '0.0.0.0',
-    },
-    env
-  );
-
   return `'use strict';
 /** @type {import("fastify").FastifyInstance} */
 const fastify = require('fastify')({ logger: true });
@@ -22,7 +14,7 @@ fastify.register(mfeProxyServerPlugin, {
 // Run the server!
 const start = async () => {
   try {
-    await fastify.listen(${env.port}, '${env.host}');
+    await fastify.listen(${env.port ?? 80}, '${env.host ?? '0.0.0.0'}');
   } catch (err) {
     fastify.log.error(err);
     process.exit(1);
