@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.1.2](https://github.com/uioz/mfe-proxy-server/compare/v1.1.1...v1.1.2) (2021-05-19)
+
+
+### Bug Fixes
+
+* deafult env variables doesn't works ([d0f1510](https://github.com/uioz/mfe-proxy-server/commit/d0f15107ac418bd9dde6b456cc72aa3b0c0ed897))
+
 ### [1.1.1](https://github.com/uioz/mfe-proxy-server/compare/v1.1.0...v1.1.1) (2021-05-19)
 
 
