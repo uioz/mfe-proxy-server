@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.1.1](https://github.com/uioz/mfe-proxy-server/compare/v1.1.0...v1.1.1) (2021-05-19)
+
+
+### Bug Fixes
+
+* template doesn't work ([bd724cb](https://github.com/uioz/mfe-proxy-server/commit/bd724cbe8a2cda5a991741e05b2cc5f32e421019))
+
 ## [1.1.0](https://github.com/uioz/mfe-proxy-server/compare/v1.0.1...v1.1.0) (2021-05-18)
 
 
