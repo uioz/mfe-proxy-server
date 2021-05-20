@@ -68,6 +68,10 @@ export interface applicationMeta {
    * 静态资源路径
    */
   staticDir: string;
+  /**
+   * registry
+   */
+  registry: string | null;
 }
 
 export interface manifest {
