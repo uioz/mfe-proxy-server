@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.2.0](https://github.com/uioz/mfe-proxy-server/compare/v1.1.2...v1.2.0) (2021-05-26)
+
+
+### Features
+
+* preCompressed support ([#32](https://github.com/uioz/mfe-proxy-server/issues/32)) ([6196592](https://github.com/uioz/mfe-proxy-server/commit/61965929623b5ab079c13c9641a80ad8f39d88c1))
+
+
+### Bug Fixes
+
+* type definition ([6203eb7](https://github.com/uioz/mfe-proxy-server/commit/6203eb78e7c76d97d61d5a25faf4d9167f163a39))
+
 ### [1.1.2](https://github.com/uioz/mfe-proxy-server/compare/v1.1.1...v1.1.2) (2021-05-19)
 
 
