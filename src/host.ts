@@ -14,6 +14,7 @@ export function hostOutputDir(
     root: root,
     wildcard: true,
     decorateReply: true,
+    preCompressed: true,
   });
 }
 
@@ -42,15 +43,15 @@ export class HostApp {
 
     // https://github.com/uioz/mfe-proxy-server/issues/21#issue-880421756
     if (this.applicationMeta.config?.static !== false) {
-      const publicPathFromConfig = this.applicationMeta.config?.static
-        ?.publicPath;
+      const publicPathFromConfig =
+        this.applicationMeta.config?.static?.publicPath;
 
       this.publicPath = normalizePath(
         publicPathFromConfig ?? DEFAULT_STATIC_PREFIX
       );
 
-      const staticPrefixFromConfig = this.applicationMeta.config?.static
-        ?.staticPrefix;
+      const staticPrefixFromConfig =
+        this.applicationMeta.config?.static?.staticPrefix;
 
       if (
         staticPrefixFromConfig === true ||
@@ -81,6 +82,7 @@ export class HostApp {
       wildcard: true,
       prefix: this.publicPath,
       decorateReply: false,
+      preCompressed: true,
     });
 
     return this;
